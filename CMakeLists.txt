@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD 14)
 add_subdirectory (library)
 
 add_executable (main main.cpp)
-target_link_libraries (main LINK_PUBLIC contiguous_tree)
+target_link_libraries (main LINK_PUBLIC trees)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/library")
