@@ -14,6 +14,8 @@ class Contiguous_node
   Contiguous_node(T data, std::vector<T> *nodes);
 
 public:
+  using const_iterator = typename std::vector<T>::const_iterator;
+
   Contiguous_node(T data);
   ~Contiguous_node();
 
@@ -22,8 +24,8 @@ public:
 
   Contiguous_node add_child(T data);
 
-  // template std::vector<T>::const_iterator children_begin() const;
-  // template std::vector<T>::const_iterator children_end() const;
+  const_iterator children_begin() const;
+  const_iterator children_end() const;
 };
 
 template <class T>
@@ -70,10 +72,10 @@ Contiguous_node<T> Contiguous_node<T>::add_child(T data)
   }
 
   std::for_each(std::begin(*nodes_), std::end(*nodes_),
-                [e = children_end_](Contiguous_node const &n) {
-                  n.index += 1 * (n.index >= e);
-                  n.children_begin_ += 1 * (n.children_begin_ >= e);
-                  n.children_end_ += 1 * (n.children_end_ >= e);
+                [ce = children_end_](Contiguous_node const &n) {
+                  n.index += 1 * (n.index >= ce);
+                  n.children_begin_ += 1 * (n.children_begin_ >= ce);
+                  n.children_end_ += 1 * (n.children_end_ >= ce);
                 });
 
   auto it = nodes_->emplace(std::begin(*nodes_, children_end_),
@@ -84,4 +86,16 @@ Contiguous_node<T> Contiguous_node<T>::add_child(T data)
   nodes_->back().children_end_ = children_end_;
 
   return *it;
+}
+
+template <class T>
+Contiguous_node<T>::const_iterator Contiguous_node<T>::children_begin() const
+{
+  return std::begin(*nodes_, children_begin_);
+}
+
+template <class T>
+Contiguous_node<T>::const_iterator Contiguous_node<T>::children_end() const
+{
+  return std::begin(*nodes_, children_end_);
 }
