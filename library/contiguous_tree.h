@@ -19,10 +19,14 @@ public:
   Contiguous_node(T data);
   ~Contiguous_node();
 
+  Contiguous_node(Contiguous_node &) = delete;
+  Contiguous_node(Contiguous_node &&) = delete;
+  Contiguous_node &operator==(Contiguous_node const &rhs) const = delete;
+
   T &data();
   T const &data() const;
 
-  Contiguous_node add_child(T data);
+  Contiguous_node& add_child(T data);
 
   const_iterator children_begin() const;
   const_iterator children_end() const;
@@ -55,7 +59,7 @@ template <class T>
 T const &Contiguous_node<T>::data() const { return data_; }
 
 template <class T>
-Contiguous_node<T> Contiguous_node<T>::add_child(T data)
+Contiguous_node<T>& Contiguous_node<T>::add_child(T data)
 {
   if (index_ == children_begin_)
   { // if no children - add one
@@ -89,13 +93,13 @@ Contiguous_node<T> Contiguous_node<T>::add_child(T data)
 }
 
 template <class T>
-Contiguous_node<T>::const_iterator Contiguous_node<T>::children_begin() const
+typename Contiguous_node<T>::const_iterator Contiguous_node<T>::children_begin() const
 {
   return std::begin(*nodes_, children_begin_);
 }
 
 template <class T>
-Contiguous_node<T>::const_iterator Contiguous_node<T>::children_end() const
+typename Contiguous_node<T>::const_iterator Contiguous_node<T>::children_end() const
 {
   return std::begin(*nodes_, children_end_);
 }
