@@ -22,15 +22,15 @@
  *
  */
 
-template <class T>
-class Node
-{
-  T data_;
-  std::vector<T> children_;
+// template <class T>
+// class Node
+// {
+//   T data_;
+//   std::vector<T> children_;
 
-public:
-  Node(T data) : data_(std::move(data)) {}
-  T &data() { return data_; }
-  void add_child(T data) { children_.push_back(T); }
-  std::vector<T> const &children() const { return children_; }
-};
+// public:
+//   Node(T data) : data_(std::move(data)) {}
+//   T &data() { return data_; }
+//   void add_child(T data) { children_.push_back(T); }
+//   std::vector<T> const &children() const { return children_; }
+// };
