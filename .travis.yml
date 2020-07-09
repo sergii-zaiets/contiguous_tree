@@ -3,10 +3,9 @@ dist: bionic
 
 compiler:
   - clang
-  - gcc
 
 before_script:
-  - mkdir .build_release
+  - mkdir -p .build_release
   - cd .build_release
   - cmake ..
 
