@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (Contiguous_tree LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_COMPILER clang++)
 
 add_subdirectory (library)
 
