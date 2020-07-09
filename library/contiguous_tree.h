@@ -3,121 +3,151 @@
 #include <algorithm>
 #include <vector>
 
-namespace contiguous_tree
-{
+namespace contiguous {
 
-  /*
+/*
  *
  */
-  template <class T>
-  class Node
-  {
+template <class T>
+class Tree {
+  struct private_ctor_t {};
+
+ public:
+  class Node {
+    friend class Tree;
+
+   public:
+    Node(private_ctor_t, T data, size_t children_begin, size_t next_sibling)
+        : data_(std::move(data)),
+          children_begin_(children_begin),
+          next_sibling_(next_sibling) {}
+
+    T& data() { return data_; }
+    T const& data() const { return data_; }
+
+   private:
+#ifdef ENABLE_UNIT_TEST_CTORS
+   public:
+#endif
     T data_;
-    size_t index_;
     size_t children_begin_;
-    size_t children_end_;
-    std::vector<Node> *nodes_;
-
-    Node(T data, std::vector<T> *nodes);
-
-  public:
-    using const_iterator = typename std::vector<T>::const_iterator;
-
-    Node(T data);
-    ~Node();
-
-    Node(Node &) = delete;
-    Node(Node &&) = delete;
-    Node &operator==(Node const &rhs) const = delete;
-
-    T &data();
-    T const &data() const;
-
-    Node &add_child(T data);
-
-    const_iterator children_begin() const;
-    const_iterator children_end() const;
+    size_t next_sibling_;
   };
 
-  //
-  // definitions
-  //______________________________________________________________________________
-  template <class T>
-  Node<T>::Node(T data, std::vector<T> *nodes)
-      : data_(std::move(data)), nodes_(nodes) {}
+  template <class N>
+  class Ptr {
+    friend class Tree;
+    using vector_type =
+        std::conditional_t<std::is_const<N>::value, const std::vector<Node>,
+                           std::vector<Node>>;
+    size_t index_;
+    vector_type* nodes_;
+    Ptr(size_t index, vector_type* nodes) : index_(index), nodes_(nodes) {}
 
-  template <class T>
-  Node<T>::Node(T data) : data_(std::move(data))
-  {
-    nodes_ = new std::vector<T>();
-    children_begin_ = children_end_ = index_ = 0;
+   public:
+    Ptr(Ptr const&) = default;
+    Ptr(Ptr&&) = default;
+    Ptr& operator=(Ptr const&) = default;
+    Ptr& operator=(Ptr&&) = default;
+
+    operator bool() const { return !!nodes_; }
+
+    Ptr& operator++() {
+      Ptr n{nodes_->at(index_).next_sibling_,
+            nodes_->at(index_).next_sibling_ ? nodes_ : nullptr};
+      index_ = n.index_;
+      nodes_ = n.nodes_;
+      return *this;
+    }
+
+    auto operator->() const { return &nodes_->at(index_); }
+    auto& operator*() const { return nodes_->at(index_); }
+  };
+
+  using Node_ptr = Ptr<Node>;
+  using Node_cptr = Ptr<Node const>;
+
+  Tree() = default;
+  Tree(size_t reserve) { nodes_.reserve(reserve); }
+
+  bool empty() const { return nodes_.empty(); }
+
+  auto size() const { return nodes_.size(); }
+
+  Node_ptr create_top(T data) {
+    ASSERT_RUNTIME(nodes_.empty());
+    nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+    return Node_ptr(nodes_.size() - 1, &nodes_);
   }
 
-  template <class T>
-  Node<T>::~Node()
-  {
-    if (index_)
-    {
-      delete nodes_;
+  Node_ptr top() {
+    ASSERT_RUNTIME(!nodes_.empty());
+    return Node_ptr(0, &nodes_);
+  }
+
+  Node_cptr top() const {
+    ASSERT_RUNTIME(!nodes_.empty());
+    return Node_cptr(0, &nodes_);
+  }
+
+  Node_ptr add_child(Node_ptr nptr, T data) {
+    if (!nptr->children_begin_) {
+      nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+      nptr->children_begin_ = nodes_.size() - 1;
+    } else {
+      nptr = {nptr->children_begin_, &nodes_};
+      while (nptr->next_sibling_) {
+        nptr = {nptr->next_sibling_, &nodes_};
+      }
+      nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+      nptr->next_sibling_ = nodes_.size() - 1;
+    }
+    return {nodes_.size() - 1, &nodes_};
+  }
+
+  void add_tree_as_child(Node_ptr nptr, Tree const& tree) {
+    // TODO: check if tree is empty
+    auto offset = nodes_.size();
+
+    if (!nptr->children_begin_) {
+      nptr->children_begin_ = offset;
+    } else {
+      nptr = {nptr->children_begin_, &nodes_};
+      while (nptr->next_sibling_) {
+        nptr = {nptr->next_sibling_, &nodes_};
+      }
+      nptr->next_sibling_ = offset;
+    }
+
+    auto start = nodes_.insert(std::end(nodes_), std::begin(tree.nodes_),
+                               std::end(tree.nodes_));
+    while (start != nodes_.end()) {
+      if (start->children_begin_) start->children_begin_ += offset;
+      if (start->next_sibling_) start->next_sibling_ += offset;
+      start++;
     }
   }
 
-  template <class T>
-  T &Node<T>::data()
-  {
-    return data_;
+  Node_ptr children_begin(Node_ptr nptr) {
+    return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
   }
 
-  template <class T>
-  T const &Node<T>::data() const
-  {
-    return data_;
+  Node_cptr children_begin(Node_cptr nptr) const {
+    return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
   }
 
-  template <class T>
-  Node<T> &Node<T>::add_child(T data)
-  {
-    if (index_ == children_begin_)
-    { // if no children - add one
-      nodes_->emplace_back(std::move(data), nodes_);
-
-      nodes_->back().index_ = nodes_->size() - 1;
-      nodes_->back().children_begin_ = nodes_->size() - 1;
-      nodes_->back().children_end_ = nodes_->size() - 1;
-
-      children_begin_ = nodes_->back().children_begin_ = nodes_->size() - 1;
-      children_end_ = nodes_->back().children_end_ = nodes_->size();
-
-      return nodes_->back();
-    }
-
-    std::for_each(std::begin(*nodes_), std::end(*nodes_),
-                  [ce = children_end_](Node const &n) {
-                    n.index += 1 * (n.index >= ce);
-                    n.children_begin_ += 1 * (n.children_begin_ >= ce);
-                    n.children_end_ += 1 * (n.children_end_ >= ce);
-                  });
-
-    auto it = nodes_->emplace(std::begin(*nodes_, children_end_), std::move(data),
-                              nodes_);
-
-    nodes_->back().index_ = children_end_;
-    nodes_->back().children_begin_ = children_end_;
-    nodes_->back().children_end_ = children_end_;
-
-    return *it;
+  template <class Function>
+  void for_each(Function f) const {
+    if (nodes_.empty()) return;
+    std::for_each(nodes_.begin(), nodes_.end(),
+                  [&](Node const& n) { f(n.data()); });
   }
 
-  template <class T>
-  typename Node<T>::const_iterator Node<T>::children_begin() const
-  {
-    return std::begin(*nodes_, children_begin_);
-  }
+ private:
+#ifdef ENABLE_UNIT_TEST_CTORS
+ public:
+#endif
+  std::vector<Node> nodes_;
+};
 
-  template <class T>
-  typename Node<T>::const_iterator Node<T>::children_end() const
-  {
-    return std::begin(*nodes_, children_end_);
-  }
-
-} // namespace contiguous_tree
+}  // namespace contiguous
