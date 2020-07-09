@@ -3,3 +3,12 @@ dist: bionic
 
 compiler:
   - clang
+
+before_script:
+  - mkdir .build_release
+  - cd .build_release
+  - cmake ..
+
+script:
+  - make
+  - make test
