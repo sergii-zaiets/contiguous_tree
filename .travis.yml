@@ -9,6 +9,12 @@ before_script:
   - cd .build_release
   - cmake ..
 
+before_install:
+  - pip install --user cpp-coveralls
+
 script:
   - make
   - make test
+
+after_success:
+  - coveralls --root . -E ".*CMakeFiles.*" 

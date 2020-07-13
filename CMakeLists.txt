@@ -23,6 +23,8 @@ add_executable(run_tests test.cpp)
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-target_link_libraries(run_tests gtest gtest_main)
+target_compile_options(run_tests PRIVATE --coverage)
+target_link_libraries(run_tests PRIVATE --coverage gtest gtest_main )
+
 
 add_test(UnitTests run_tests)

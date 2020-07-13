@@ -1,12 +1,18 @@
 #include <iostream>
 #include "gtest/gtest.h"
+#include "contiguous_tree.h"
 
-TEST(Test, test_1) {
-  EXPECT_TRUE(true);
+using namespace contiguous;
+
+TEST(Test, empty_tree) {
+  Tree<int> tree;
+  EXPECT_TRUE(tree.empty());
 }
 
-TEST(Test1, test_2) {
-  EXPECT_TRUE(true);
+TEST(Test1, add_top) {
+  Tree<int> tree;
+  auto top = tree.create_top(5);
+  EXPECT_EQ(5, top->data());
 }
 
 TEST(Test2, test_3) {

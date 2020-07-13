@@ -76,7 +76,7 @@ class Tree {
   auto size() const { return nodes_.size(); }
 
   Node_ptr create_top(T data) {
-    ASSERT_RUNTIME(nodes_.empty());
+    // ASSERT_RUNTIME(nodes_.empty());
     nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
     return Node_ptr(nodes_.size() - 1, &nodes_);
   }
