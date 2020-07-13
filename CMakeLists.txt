@@ -11,8 +11,18 @@ add_subdirectory(libs/google/benchmark)
 # build tests (targets: gtest_main, gtest)
 add_subdirectory(libs/google/googletest/googletest)
 
-add_subdirectory (library)
-
 add_executable (main main.cpp)
-target_link_libraries (main LINK_PUBLIC trees)
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/library")
+
+##############
+# Unit Tests
+##############
+
+enable_testing()
+
+add_executable(run_tests test.cpp)
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+target_link_libraries(run_tests gtest gtest_main)
+
+add_test(UnitTests run_tests)
