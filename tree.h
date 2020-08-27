@@ -1,36 +1,31 @@
 #include <vector>
+#include <memory>
 
-// template <class T>
-// class Tree
-// {
-// public:
-//   class Node
-//   {
-//   public:
-//     T value_;
-//     std::vector<Node> nodes_;
-//     Node(T value) : value_(value) {}
-//   };
+template <class T>
+struct Node
+{
+  Node(T t) : data_(std::move(t)) {}
+  Node(Node &&rhs) : data_(std::move(rhs.data_)),
+                     children_(std::move(rhs.children_)) {}
 
-//   Tree(T value) : root_(value) {}
+  Node(Node &rhs) = delete;
 
-// private:
-//   Node root_;
-// };
+  T data_;
+  std::vector<std::unique_ptr<Node<T>>> children_;
+};
 
-/*
- *
- */
+template <class T>
+struct Tree
+{
+  Tree() {}
+  Tree(T t) : root_(std::make_unique<Node<T>>(std::move(t)))
+  {
+  }
 
-// template <class T>
-// class Node
-// {
-//   T data_;
-//   std::vector<T> children_;
+  bool is_empty() const { return !root_; }
+  Node<T> const &root() const { return *root_; }
+  Node<T> &root() { return *root_; }
 
-// public:
-//   Node(T data) : data_(std::move(data)) {}
-//   T &data() { return data_; }
-//   void add_child(T data) { children_.push_back(T); }
-//   std::vector<T> const &children() const { return children_; }
-// };
+private:
+  std::unique_ptr<Node<T>> root_;
+};

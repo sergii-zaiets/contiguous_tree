@@ -28,3 +28,11 @@ target_link_libraries(run_tests PRIVATE --coverage gtest gtest_main )
 
 
 add_test(UnitTests run_tests)
+
+##############
+# Benchmarks
+##############
+
+add_executable(run_benchmarks benchmark.cpp)
+target_link_libraries(run_benchmarks gtest benchmark::benchmark benchmark::benchmark_main)
+
