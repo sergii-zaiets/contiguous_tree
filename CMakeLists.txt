@@ -20,19 +20,17 @@ add_executable (main main.cpp)
 enable_testing()
 
 add_executable(run_tests test.cpp)
-
+target_compile_options(run_tests PRIVATE -fno-inline -fprofile-instr-generate -fcoverage-mapping)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-target_compile_options(run_tests PRIVATE --coverage)
-target_link_libraries(run_tests PRIVATE --coverage gtest gtest_main )
-
-
+target_link_libraries(run_tests gtest gtest_main -fno-inline  -fprofile-instr-generate -fcoverage-mapping)
 add_test(UnitTests run_tests)
 
 ##############
 # Benchmarks
-##############
+##############s
 
 add_executable(run_benchmarks benchmark.cpp)
 target_link_libraries(run_benchmarks gtest benchmark::benchmark benchmark::benchmark_main)
 
+#llvm-profdata merge  default.profraw -o default.profdata
+#llvm-cov show ./run_tests -instr-profile=default.profdata -format="html" -output-dir=.
