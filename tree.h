@@ -7,11 +7,10 @@ struct Node
   Node(T t) : data_(std::move(t)) {}
   Node(Node &&rhs) : data_(std::move(rhs.data_)),
                      children_(std::move(rhs.children_)) {}
-
   Node(Node &rhs) = delete;
 
   T data_;
-  std::vector<std::unique_ptr<Node<T>>> children_;
+  std::vector<Node<T>> children_;
 };
 
 template <class T>
@@ -22,7 +21,7 @@ struct Tree
   {
   }
 
-  bool is_empty() const { return !root_; }
+  bool empty() const { return !root_; }
   Node<T> const &root() const { return *root_; }
   Node<T> &root() { return *root_; }
 
