@@ -1,18 +1,14 @@
 language: cpp
+dist: bionic
 
 matrix:
-include:
- - os: linux
-      name: "Xenial - clang 9"
-      dist: xenial
-      env: [USE_CC='/usr/bin/clang-9', USE_CXX='/usr/bin/clang++-9']
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-          packages: ['clang-9', 'cmake', 'libstdc++-9-dev', 'libstdc++6', 'lcov']
+  include:
+    - os: linux
+      env: COMPILER=clang++-9 DISABLE_ASAN=yes
+      
+addons:
+  apt:
+    packages: lcov
 
 before_script:
   - mkdir -p .build_release
