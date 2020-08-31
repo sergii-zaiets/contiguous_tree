@@ -1,22 +1,14 @@
 language: cpp
 os: linux
 
+addons:
+  apt:
+    sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+    packages: ['clang++-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
 env:
-    global:
-        - LLVM_VERSION=8.0.0
-
-matrix:
-  include:
-    - os: linux
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang++-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
-      env:
-        - CC=clang-8
-        - CXX=clang++-8
-        - CXXSTD=-std=c++17
+  - CC=clang-8
+  - CXX=clang++-8
+  - CXXSTD=-std=c++17
 
 
 before_script:
