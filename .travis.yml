@@ -1,10 +1,12 @@
+language: cpp
+os: linux
+
 env:
     global:
         - LLVM_VERSION=8.0.0
 
 matrix:
   include:
-    - language: cpps
     - os: linux
     - compiler: clang
       addons:
