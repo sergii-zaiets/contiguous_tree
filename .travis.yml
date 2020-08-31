@@ -4,6 +4,10 @@ dist: bionic
 compiler:
   - clang
 
+addons:
+  apt:
+    packages: lcov
+
 before_script:
   - mkdir -p .build_release
   - cd .build_release
