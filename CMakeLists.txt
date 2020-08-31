@@ -3,6 +3,8 @@ project (Contiguous_tree LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
+message('Contiguous_tree compliler used: '${CMAKE_CXX_COMPILER_ID} - ${CMAKE_CXX_COMPILER_VERSION})
+
 # build google benchmark (target: benchmark)
 # do not build tests of benchmarking lib
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Suppressing benchmark's tests" FORCE)
