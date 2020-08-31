@@ -7,6 +7,7 @@ compiler:
 addons:
   apt:
     packages: lcov
+    packages: llvm
 
 before_script:
   - mkdir -p .build_release
@@ -14,11 +15,12 @@ before_script:
   - cmake ..
 
 before_install:
-  - pip install --user cpp-coveralls
+
 
 script:
   - make
 
+  - llvm-cov export --version
   - LLVM_PROFILE_FILE=./run_tests.profraw ./run_tests
   - llvm-profdata merge run_tests.profraw -o run_tests.profdata
   - llvm-cov export -format=lcov -instr-profile run_tests.profdata ./run_tests  > cov.info
