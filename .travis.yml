@@ -1,13 +1,14 @@
 language: cpp
 os: linux
 dist: xenial
+
 matrix:
   include:
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'lcov']
+          packages: ['clang-8', 'lcov', 'zlib']
       env:
         - CXX=clang++-8
         - CXXSTD=-std=c++17
