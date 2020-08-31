@@ -2,6 +2,11 @@ language: cpp
 os: linux
 dist: xenial
 
+env:
+    global:
+        - LLVM_VERSION=8.0.0
+
+
 matrix:
   include:
     - compiler: clang
