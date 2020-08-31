@@ -6,17 +6,19 @@ env:
     global:
         - LLVM_VERSION=8.0.0
 
-
 matrix:
   include:
+    - os: linux
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
+          packages: ['clang++-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
       env:
         - CXX=clang++-8
         - CXXSTD=-std=c++17
+
+
 
 
 before_script:
