@@ -14,7 +14,9 @@ before_install:
 
 script:
   - make
-  - make test
 
-after_success:
-  - coveralls --root . -E ".*CMakeFiles.*" 
+  - LLVM_PROFILE_FILE=./run_tests.profraw ./run_tests
+  - llvm-profdata merge run_tests.profraw -o run_tests.profdata
+  - llvm-cov export -format=lcov -instr-profile run_tests.profdata ./run_tests  > cov.info
+  - genhtml cov.info --output-directory out
+  - bash <(curl -s https://codecov.io/bash) -f cov.info || echo "Codecov did not collect coverage reports"

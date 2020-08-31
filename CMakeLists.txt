@@ -20,9 +20,9 @@ add_executable (main main.cpp)
 enable_testing()
 
 add_executable(run_tests test.cpp)
-target_compile_options(run_tests PRIVATE -fno-inline -fprofile-instr-generate -fcoverage-mapping)
+target_compile_options(run_tests PRIVATE -fprofile-instr-generate -fcoverage-mapping)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-target_link_libraries(run_tests gtest gtest_main -fno-inline  -fprofile-instr-generate -fcoverage-mapping)
+target_link_libraries(run_tests gtest gtest_main -fprofile-instr-generate -fcoverage-mapping)
 add_test(UnitTests run_tests)
 
 ##############
