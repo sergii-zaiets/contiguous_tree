@@ -1,14 +1,17 @@
 language: cpp
-dist: bionic
+dist: xenial
+os: linux
 
-matrix:
-  include:
-    - os: linux
-      env: COMPILER=clang++-9 DISABLE_ASAN=yes
-      
 addons:
   apt:
-    packages: lcov
+    sources:
+    # Clang 9:
+      - llvm-toolchain-xenial
+      - ubuntu-toolchain-r-test
+    packages:
+      - clang-9
+      - cmake
+      - lcov
 
 before_script:
   - mkdir -p .build_release
