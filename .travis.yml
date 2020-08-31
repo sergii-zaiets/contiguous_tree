@@ -6,7 +6,7 @@ addons:
   apt:
     sources:
     # Clang 9:
-      - llvm-toolchain-xenial
+      - llvm-toolchain-xenial-9
       - ubuntu-toolchain-r-test
     packages:
       - clang-9
