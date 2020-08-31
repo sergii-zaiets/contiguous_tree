@@ -1,6 +1,5 @@
 language: cpp
 os: linux
-dist: xenial
 
 env:
     global:
@@ -17,7 +16,6 @@ matrix:
       env:
         - CXX=clang++-8
         - CXXSTD=-std=c++17
-
 
 
 
