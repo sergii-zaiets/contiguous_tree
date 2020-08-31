@@ -1,17 +1,17 @@
 language: cpp
-dist: xenial
 os: linux
+dist: xenial
+matrix:
+  include:
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'lcov']
+      env:
+        - CXX=clang++-8
+        - CXXSTD=-std=c++17
 
-addons:
-  apt:
-    sources:
-    # Clang 9:
-      - llvm-toolchain-xenial-9
-      - ubuntu-toolchain-r-test
-    packages:
-      - clang-9
-      - cmake
-      - lcov
 
 before_script:
   - mkdir -p .build_release
