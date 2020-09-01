@@ -1,20 +1,14 @@
 language: cpp
 os: linux
+compiler: clang
+dist: xenial
+env:
+  - COMPILER=clang++-8
 
-#env:
-#    global:
-#        - LLVM_VERSION=8.0.0
-
-matrix:
-  include:
-    - os: linux
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang++-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
-      env: COMPILER=clang++-8
-
+addons:
+  apt:
+     sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+     packages: ['clang++-8', 'lcov', 'zlib1g-dev', 'llvm-8-dev']
 
 before_script:
   - mkdir -p .build_release
