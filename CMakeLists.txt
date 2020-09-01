@@ -3,6 +3,8 @@ project (Contiguous_tree LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
+find_package(ZLIB)
+
 message('Contiguous_tree compliler used: '${CMAKE_CXX_COMPILER_ID} - ${CMAKE_CXX_COMPILER_VERSION})
 
 # build google benchmark (target: benchmark)
