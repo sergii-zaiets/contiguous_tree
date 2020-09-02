@@ -1,6 +1,6 @@
-#include <iostream>
-#include "gtest/gtest.h"
 #include "contiguous_tree.h"
+#include "gtest/gtest.h"
+#include <iostream>
 
 using namespace contiguous;
 
@@ -22,10 +22,6 @@ TEST(Test2, test_3) {
   EXPECT_EQ(8, child->data());
 }
 
-TEST(Test3, test_4) {
-  EXPECT_TRUE(true);
-}
+TEST(Test3, test_4) { EXPECT_TRUE(true); }
 
-TEST(Test4, test_5) {
-  EXPECT_TRUE(true);
-}
+TEST(Test4, test_5) { EXPECT_TRUE(true); }

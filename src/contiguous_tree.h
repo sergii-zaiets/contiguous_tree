@@ -1,59 +1,56 @@
 #pragma once
 
 #include <algorithm>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 namespace contiguous {
 
 /*
  *
  */
-template <class T>
-class Tree {
+template <class T> class Tree {
   struct private_ctor_t {};
 
- public:
+public:
   class Node {
     friend class Tree;
 
-   public:
+  public:
     Node(private_ctor_t, T data, size_t children_begin, size_t next_sibling)
-        : data_(std::move(data)),
-          children_begin_(children_begin),
+        : data_(std::move(data)), children_begin_(children_begin),
           next_sibling_(next_sibling) {}
 
-    T& data() { return data_; }
-    T const& data() const { return data_; }
+    T &data() { return data_; }
+    T const &data() const { return data_; }
 
-   private:
+  private:
 #ifdef ENABLE_UNIT_TEST_CTORS
-   public:
+  public:
 #endif
     T data_;
     size_t children_begin_;
     size_t next_sibling_;
   };
 
-  template <class N>
-  class Ptr {
+  template <class N> class Ptr {
     friend class Tree;
     using vector_type =
         std::conditional_t<std::is_const<N>::value, const std::vector<Node>,
                            std::vector<Node>>;
     size_t index_;
-    vector_type* nodes_;
-    Ptr(size_t index, vector_type* nodes) : index_(index), nodes_(nodes) {}
+    vector_type *nodes_;
+    Ptr(size_t index, vector_type *nodes) : index_(index), nodes_(nodes) {}
 
-   public:
-    Ptr(Ptr const&) = default;
-    Ptr(Ptr&&) = default;
-    Ptr& operator=(Ptr const&) = default;
-    Ptr& operator=(Ptr&&) = default;
+  public:
+    Ptr(Ptr const &) = default;
+    Ptr(Ptr &&) = default;
+    Ptr &operator=(Ptr const &) = default;
+    Ptr &operator=(Ptr &&) = default;
 
     operator bool() const { return !!nodes_; }
 
-    Ptr& operator++() {
+    Ptr &operator++() {
       Ptr n{nodes_->at(index_).next_sibling_,
             nodes_->at(index_).next_sibling_ ? nodes_ : nullptr};
       index_ = n.index_;
@@ -62,7 +59,7 @@ class Tree {
     }
 
     auto operator->() const { return &nodes_->at(index_); }
-    auto& operator*() const { return nodes_->at(index_); }
+    auto &operator*() const { return nodes_->at(index_); }
   };
 
   using Node_ptr = Ptr<Node>;
@@ -106,7 +103,7 @@ class Tree {
     return {nodes_.size() - 1, &nodes_};
   }
 
-  void add_tree_as_child(Node_ptr nptr, Tree const& tree) {
+  void add_tree_as_child(Node_ptr nptr, Tree const &tree) {
     // TODO: check if tree is empty
     auto offset = nodes_.size();
 
@@ -123,8 +120,10 @@ class Tree {
     auto start = nodes_.insert(std::end(nodes_), std::begin(tree.nodes_),
                                std::end(tree.nodes_));
     while (start != nodes_.end()) {
-      if (start->children_begin_) start->children_begin_ += offset;
-      if (start->next_sibling_) start->next_sibling_ += offset;
+      if (start->children_begin_)
+        start->children_begin_ += offset;
+      if (start->next_sibling_)
+        start->next_sibling_ += offset;
       start++;
     }
   }
@@ -137,18 +136,18 @@ class Tree {
     return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
   }
 
-  template <class Function>
-  void for_each(Function f) const {
-    if (nodes_.empty()) return;
+  template <class Function> void for_each(Function f) const {
+    if (nodes_.empty())
+      return;
     std::for_each(nodes_.begin(), nodes_.end(),
-                  [&](Node const& n) { f(n.data()); });
+                  [&](Node const &n) { f(n.data()); });
   }
 
- private:
+private:
 #ifdef ENABLE_UNIT_TEST_CTORS
- public:
+public:
 #endif
   std::vector<Node> nodes_;
 };
 
-}  // namespace contiguous
+} // namespace contiguous
