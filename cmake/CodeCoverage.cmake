@@ -1,4 +1,4 @@
-option(ENABLE_CODE_COVERAGE "Enable coverage reporting" OFF)
+option(ENABLE_CODE_COVERAGE "Enable coverage reporting" ON)
 
 add_library(coverage_config INTERFACE)
 

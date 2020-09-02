@@ -13,14 +13,14 @@ addons:
 before_script:
   - mkdir -p .build_release
   - cd .build_release
-  - cmake -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8 -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ZLIB=ON ..
+  - cmake -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8 -DCMAKE_BUILD_TYPE=Release ..
 
 script:
   - make
 
   - llvm-cov-8 export --version
-  - LLVM_PROFILE_FILE=./run_tests.profraw ./run_tests
+  - LLVM_PROFILE_FILE=./run_tests.profraw ./tests/run_tests
   - llvm-profdata-8 merge ./run_tests.profraw -o ./run_tests.profdata
-  - llvm-cov-8 export -format=lcov -instr-profile ./run_tests.profdata ./run_tests  > cov.info
+  - llvm-cov-8 export -format=lcov -instr-profile ./run_tests.profdata ./tests/run_tests  > cov.info
   - genhtml cov.info --output-directory out
   - bash <(curl -s https://codecov.io/bash) -f cov.info || echo "Codecov did not collect coverage reports"
