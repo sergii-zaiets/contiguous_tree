@@ -18,7 +18,6 @@ before_script:
 script:
   - make
 
-  - llvm-cov-8 export --version
   - LLVM_PROFILE_FILE=./run_tests.profraw ./tests/run_tests
   - llvm-profdata-8 merge ./run_tests.profraw -o ./run_tests.profdata
   - llvm-cov-8 export -format=lcov -instr-profile ./run_tests.profdata ./tests/run_tests  > cov.info

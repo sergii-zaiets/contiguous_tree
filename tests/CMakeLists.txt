@@ -7,7 +7,7 @@ if(ENABLE_TESTS)
     add_executable(run_tests test.cpp)
     link_default_target(run_tests)
     include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/include)
-    target_link_libraries(run_tests gtest gtest_main)
+    target_link_libraries(run_tests gtest gtest_main -fprofile-instr-generate -fcoverage-mapping)
     add_test(UnitTests run_tests)
 
 endif()
