@@ -10,24 +10,19 @@ namespace contiguous {
  *
  */
 template <class T> class Tree {
-  struct private_ctor_t {};
-
 public:
   class Node {
     friend class Tree;
 
   public:
-    Node(private_ctor_t, T data, size_t children_begin, size_t next_sibling)
-        : data_(std::move(data)), children_begin_(children_begin),
+    Node(T &&data, size_t children_begin, size_t next_sibling)
+        : data_(std::forward<T>(data)), children_begin_(children_begin),
           next_sibling_(next_sibling) {}
 
     T &data() { return data_; }
     T const &data() const { return data_; }
 
   private:
-#ifdef ENABLE_UNIT_TEST_CTORS
-  public:
-#endif
     T data_;
     size_t children_begin_;
     size_t next_sibling_;
@@ -72,9 +67,9 @@ public:
 
   auto size() const { return nodes_.size(); }
 
-  Node_ptr create_top(T data) {
+  Node_ptr create_top(T &&data) {
     // ASSERT_RUNTIME(nodes_.empty());
-    nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+    nodes_.emplace_back(std::forward<T>(data), 0, 0);
     return Node_ptr(nodes_.size() - 1, &nodes_);
   }
 
@@ -88,16 +83,16 @@ public:
     return Node_cptr(0, &nodes_);
   }
 
-  Node_ptr add_child(Node_ptr nptr, T data) {
+  Node_ptr add_child(Node_ptr nptr, T &&data) {
     if (!nptr->children_begin_) {
-      nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+      nodes_.emplace_back(std::forward<T>(data), 0, 0);
       nptr->children_begin_ = nodes_.size() - 1;
     } else {
       nptr = {nptr->children_begin_, &nodes_};
       while (nptr->next_sibling_) {
         nptr = {nptr->next_sibling_, &nodes_};
       }
-      nodes_.emplace_back(private_ctor_t{}, std::move(data), 0, 0);
+      nodes_.emplace_back(std::forward<T>(data), 0, 0);
       nptr->next_sibling_ = nodes_.size() - 1;
     }
     return {nodes_.size() - 1, &nodes_};
@@ -144,9 +139,6 @@ public:
   }
 
 private:
-#ifdef ENABLE_UNIT_TEST_CTORS
-public:
-#endif
   std::vector<Node> nodes_;
 };
 

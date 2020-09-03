@@ -74,7 +74,8 @@ BENCHMARK(bm_create_classical_tree)
     ->Args({12, 2})
     ->Args({13, 3})
     ->Args({13, 4})
-    ->Args({27, 2});
+    ->Args({27, 2})
+    ->Args({28, 2});
 
 // Define another benchmark
 static void bm_create_contiguous_tree(benchmark::State &state) {
@@ -97,4 +98,5 @@ BENCHMARK(bm_create_contiguous_tree)
     ->Args({12, 2})
     ->Args({13, 3})
     ->Args({13, 4})
-    ->Args({27, 2});
+    ->Args({27, 2})
+    ->Args({28, 2});
