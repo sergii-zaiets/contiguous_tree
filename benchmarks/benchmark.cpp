@@ -11,8 +11,8 @@ void add(Function const &function, Node<T> &node, int depth, int width) {
 
   int i = width;
   while (i--) {
-    node.children_.emplace_back(function());
-    add(function, node.children_.back(), depth - 1, width);
+    node.children.emplace_back(function());
+    add(function, node.children.back(), depth - 1, width);
   }
 }
 
