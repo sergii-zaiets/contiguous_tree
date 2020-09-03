@@ -2,18 +2,17 @@
 #include <vector>
 
 template <class T> struct Node {
-  Node(T t) : data_(std::move(t)) {}
-  Node(Node &&rhs)
-      : data_(std::move(rhs.data_)), children_(std::move(rhs.children_)) {}
+  Node(T &&d) : data(std::forward<T>(d)) {}
+  Node(Node &&rhs) = default;
   Node(Node &rhs) = delete;
 
-  T data_;
-  std::vector<Node<T>> children_;
+  T data;
+  std::vector<Node<T>> children;
 };
 
 template <class T> struct Tree {
   Tree() {}
-  Tree(T t) : root_(std::make_unique<Node<T>>(std::move(t))) {}
+  Tree(T &&data) : root_(std::make_unique<Node<T>>(std::forward<T>(data))) {}
 
   bool empty() const { return !root_; }
   Node<T> const &root() const { return *root_; }
