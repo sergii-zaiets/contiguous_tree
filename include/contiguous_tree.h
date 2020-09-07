@@ -15,9 +15,7 @@ public:
     friend class Tree;
 
   public:
-    Node(T &&data, size_t children_begin, size_t next_sibling)
-        : data_(std::forward<T>(data)), children_begin_(children_begin),
-          next_sibling_(next_sibling) {}
+    Node(T &&data) : data_(std::forward<T>(data)) {}
 
     T &data() { return data_; }
     T const &data() const { return data_; }
@@ -55,19 +53,17 @@ public:
 
     Ptr add_child(T &&data) {
       auto &nodes = *nodes_;
-      // TODO: consider use of std::vector.at(...)
       if (!nodes[index_].children_begin_) {
-        nodes.emplace_back(std::forward<T>(data), 0, 0);
-        nodes[index_].children_begin_ = nodes.size() - 1;
+        nodes[index_].children_begin_ = nodes.size();
       } else {
         auto i = nodes[nodes[index_].children_begin_].next_sibling_;
         while (i) {
           i = nodes[i].next_sibling_;
         }
-        nodes.emplace_back(std::forward<T>(data), 0, 0);
-        nodes[i].next_sibling_ = nodes.size() - 1;
+        nodes[i].next_sibling_ = nodes.size();
       }
-      return {nodes.size() - 1, &nodes};
+      nodes.emplace_back(std::forward<T>(data));
+      return {nodes.size() - 1, nodes_};
     }
 
     auto operator->() const { return &nodes_->at(index_); }
@@ -86,7 +82,7 @@ public:
 
   Node_ptr create_top(T &&data) {
     // ASSERT_RUNTIME(nodes_.empty());
-    nodes_.emplace_back(std::forward<T>(data), 0, 0);
+    nodes_.emplace_back(std::forward<T>(data));
     return Node_ptr(nodes_.size() - 1, &nodes_);
   }
 
