@@ -61,7 +61,10 @@ public:
       return {nodes_->size() - 1, nodes_};
     }
 
+    auto operator->() { return &nodes_->at(index_); }
     auto operator->() const { return &nodes_->at(index_); }
+
+    auto &operator*() { return nodes_->at(index_); }
     auto &operator*() const { return nodes_->at(index_); }
   };
 
