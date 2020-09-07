@@ -18,7 +18,7 @@ TEST(Test1, add_top) {
 TEST(Test2, test_3) {
   Tree<int> tree;
   auto top = tree.create_top(5);
-  auto child = tree.add_child(top, 8);
+  auto child = top.add_child(8);
   EXPECT_EQ(8, child->data());
 }
 

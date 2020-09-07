@@ -34,7 +34,7 @@ void add(Function const &function, contiguous::Tree<T> &tree,
 
   int i = width;
   while (i--) {
-    auto child = tree.add_child(node, function());
+    auto child = node.add_child(function());
     add(function, tree, child, depth - 1, width);
   }
 }

@@ -17,6 +17,19 @@
       ]
     },
     {
+      "label": "cmake debug",
+      "options": {
+        "cwd": ".build_debug"
+      },
+      "command": "cmake",
+      "args": [
+        "-DCMAKE_CXX_COMPILER=clang++-11",
+        "-DCMAKE_C_COMPILER=clang-11",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        ".."
+      ]
+    },
+    {
       "group": "build",
       "label": "build release",
       "dependsOn": [
@@ -24,6 +37,23 @@
       ],
       "options": {
         "cwd": ".build_release"
+      },
+      "command": "make",
+      "args": [
+        "-j4",
+        "-C",
+        ".",
+        "all"
+      ]
+    },
+    {
+      "group": "build",
+      "label": "build debug",
+      "dependsOn": [
+        "cmake debug"
+      ],
+      "options": {
+        "cwd": ".build_debug"
       },
       "command": "make",
       "args": [

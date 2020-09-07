@@ -24,8 +24,8 @@ public:
 
   private:
     T data_;
-    size_t children_begin_;
-    size_t next_sibling_;
+    size_t children_begin_{};
+    size_t next_sibling_{};
   };
 
   template <class N> class Ptr {
@@ -51,6 +51,23 @@ public:
       index_ = n.index_;
       nodes_ = n.nodes_;
       return *this;
+    }
+
+    Ptr add_child(T &&data) {
+      auto &nodes = *nodes_;
+      // TODO: consider use of std::vector.at(...)
+      if (!nodes[index_].children_begin_) {
+        nodes.emplace_back(std::forward<T>(data), 0, 0);
+        nodes[index_].children_begin_ = nodes.size() - 1;
+      } else {
+        auto i = nodes[nodes[index_].children_begin_].next_sibling_;
+        while (i) {
+          i = nodes[i].next_sibling_;
+        }
+        nodes.emplace_back(std::forward<T>(data), 0, 0);
+        nodes[i].next_sibling_ = nodes.size() - 1;
+      }
+      return {nodes.size() - 1, &nodes};
     }
 
     auto operator->() const { return &nodes_->at(index_); }
@@ -83,45 +100,30 @@ public:
     return Node_cptr(0, &nodes_);
   }
 
-  Node_ptr add_child(Node_ptr nptr, T &&data) {
-    if (!nptr->children_begin_) {
-      nodes_.emplace_back(std::forward<T>(data), 0, 0);
-      nptr->children_begin_ = nodes_.size() - 1;
-    } else {
-      nptr = {nptr->children_begin_, &nodes_};
-      while (nptr->next_sibling_) {
-        nptr = {nptr->next_sibling_, &nodes_};
-      }
-      nodes_.emplace_back(std::forward<T>(data), 0, 0);
-      nptr->next_sibling_ = nodes_.size() - 1;
-    }
-    return {nodes_.size() - 1, &nodes_};
-  }
+  // void add_tree_as_child(Node_ptr nptr, Tree const &tree) {
+  //   // TODO: check if tree is empty
+  //   auto offset = nodes_.size();
 
-  void add_tree_as_child(Node_ptr nptr, Tree const &tree) {
-    // TODO: check if tree is empty
-    auto offset = nodes_.size();
+  //   if (!nptr->children_begin_) {
+  //     nptr->children_begin_ = offset;
+  //   } else {
+  //     nptr = {nptr->children_begin_, &nodes_};
+  //     while (nptr->next_sibling_) {
+  //       nptr = {nptr->next_sibling_, &nodes_};
+  //     }
+  //     nptr->next_sibling_ = offset;
+  //   }
 
-    if (!nptr->children_begin_) {
-      nptr->children_begin_ = offset;
-    } else {
-      nptr = {nptr->children_begin_, &nodes_};
-      while (nptr->next_sibling_) {
-        nptr = {nptr->next_sibling_, &nodes_};
-      }
-      nptr->next_sibling_ = offset;
-    }
-
-    auto start = nodes_.insert(std::end(nodes_), std::begin(tree.nodes_),
-                               std::end(tree.nodes_));
-    while (start != nodes_.end()) {
-      if (start->children_begin_)
-        start->children_begin_ += offset;
-      if (start->next_sibling_)
-        start->next_sibling_ += offset;
-      start++;
-    }
-  }
+  //   auto start = nodes_.insert(std::end(nodes_), std::begin(tree.nodes_),
+  //                              std::end(tree.nodes_));
+  //   while (start != nodes_.end()) {
+  //     if (start->children_begin_)
+  //       start->children_begin_ += offset;
+  //     if (start->next_sibling_)
+  //       start->next_sibling_ += offset;
+  //     start++;
+  //   }
+  // }
 
   Node_ptr children_begin(Node_ptr nptr) {
     return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
