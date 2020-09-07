@@ -52,18 +52,13 @@ public:
     }
 
     Ptr add_child(T &&data) {
-      auto &nodes = *nodes_;
-      if (!nodes[index_].children_begin_) {
-        nodes[index_].children_begin_ = nodes.size();
-      } else {
-        auto i = nodes[nodes[index_].children_begin_].next_sibling_;
-        while (i) {
-          i = nodes[i].next_sibling_;
-        }
-        nodes[i].next_sibling_ = nodes.size();
+      auto *ptr = &nodes_->at(index_).children_begin_;
+      while (*ptr) {
+        ptr = &nodes_->at(*ptr).next_sibling_;
       }
-      nodes.emplace_back(std::forward<T>(data));
-      return {nodes.size() - 1, nodes_};
+      *ptr = nodes_->size();
+      nodes_->emplace_back(std::forward<T>(data));
+      return {nodes_->size() - 1, nodes_};
     }
 
     auto operator->() const { return &nodes_->at(index_); }
