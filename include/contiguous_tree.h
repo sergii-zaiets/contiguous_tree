@@ -36,11 +36,6 @@ public:
     Ptr(size_t index, vector_type *nodes) : index_(index), nodes_(nodes) {}
 
   public:
-    Ptr(Ptr const &) = default;
-    Ptr(Ptr &&) = default;
-    Ptr &operator=(Ptr const &) = default;
-    Ptr &operator=(Ptr &&) = default;
-
     operator bool() const { return !!nodes_; }
 
     Ptr &operator++() {
@@ -49,6 +44,11 @@ public:
       index_ = n.index_;
       nodes_ = n.nodes_;
       return *this;
+    }
+
+    Ptr children_begin() const {
+      auto cb = nodes_->at(index_).children_begin_;
+      return {cb, cb ? nodes_ : nullptr};
     }
 
     Ptr add_child(T &&data) {
@@ -73,9 +73,7 @@ public:
 
   Tree() = default;
   Tree(size_t reserve) { nodes_.reserve(reserve); }
-
   bool empty() const { return nodes_.empty(); }
-
   auto size() const { return nodes_.size(); }
 
   Node_ptr create_top(T &&data) {
@@ -92,39 +90,6 @@ public:
   Node_cptr top() const {
     ASSERT_RUNTIME(!nodes_.empty());
     return Node_cptr(0, &nodes_);
-  }
-
-  // void add_tree_as_child(Node_ptr nptr, Tree const &tree) {
-  //   // TODO: check if tree is empty
-  //   auto offset = nodes_.size();
-
-  //   if (!nptr->children_begin_) {
-  //     nptr->children_begin_ = offset;
-  //   } else {
-  //     nptr = {nptr->children_begin_, &nodes_};
-  //     while (nptr->next_sibling_) {
-  //       nptr = {nptr->next_sibling_, &nodes_};
-  //     }
-  //     nptr->next_sibling_ = offset;
-  //   }
-
-  //   auto start = nodes_.insert(std::end(nodes_), std::begin(tree.nodes_),
-  //                              std::end(tree.nodes_));
-  //   while (start != nodes_.end()) {
-  //     if (start->children_begin_)
-  //       start->children_begin_ += offset;
-  //     if (start->next_sibling_)
-  //       start->next_sibling_ += offset;
-  //     start++;
-  //   }
-  // }
-
-  Node_ptr children_begin(Node_ptr nptr) {
-    return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
-  }
-
-  Node_cptr children_begin(Node_cptr nptr) const {
-    return {nptr->children_begin_, nptr->children_begin_ ? &nodes_ : nullptr};
   }
 
   template <class Function> void for_each(Function f) const {
