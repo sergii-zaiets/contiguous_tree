@@ -10,14 +10,11 @@
       "request": "launch",
       "program": "${workspaceFolder}/.build_debug/benchmarks/run_benchmarks",
       "args": [
+        "--benchmark_filter=Traverse*"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [
-        {
-          "name": "PGPASSWORD",
-          "value": "d1am.nd7ty"
-        }
       ],
       "externalConsole": false,
       "MIMode": "gdb",

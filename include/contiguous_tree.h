@@ -36,6 +36,11 @@ public:
     Ptr(size_t index, vector_type *nodes) : index_(index), nodes_(nodes) {}
 
   public:
+    Ptr(Ptr const &) = default;
+    Ptr(Ptr &&) = default;
+    Ptr &operator=(Ptr const &) = default;
+    Ptr &operator=(Ptr &&) = default;
+
     operator bool() const { return !!nodes_; }
 
     Ptr &operator++() {
