@@ -13,6 +13,7 @@
         "-DCMAKE_CXX_COMPILER=clang++-11",
         "-DCMAKE_C_COMPILER=clang-11",
         "-DCMAKE_BUILD_TYPE=Release",
+        "-DENABLE_CODE_COVERAGE=OFF",
         ".."
       ]
     },
@@ -26,6 +27,7 @@
         "-DCMAKE_CXX_COMPILER=clang++-11",
         "-DCMAKE_C_COMPILER=clang-11",
         "-DCMAKE_BUILD_TYPE=Debug",
+        "-DENABLE_CODE_COVERAGE=OFF",
         ".."
       ]
     },

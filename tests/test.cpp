@@ -2,26 +2,34 @@
 #include "gtest/gtest.h"
 #include <iostream>
 
-using namespace contiguous;
-
-TEST(Test, empty_tree) {
-  Tree<int> tree;
+TEST(Contiguous_test, empty_tree) {
+  contiguous::Tree<int> tree;
   EXPECT_TRUE(tree.empty());
+  EXPECT_EQ(0, tree.size());
+  EXPECT_FALSE(tree.root());
+  tree.for_each([](auto &n) {
+    ASSERT_TRUE(false); // must not be called
+  });
 }
 
-TEST(Test1, add_top) {
-  Tree<int> tree(5);
-  auto root = tree.root();
-  EXPECT_EQ(5, root->data());
+TEST(Test1, only_root) {
+  contiguous::Tree<int> tree(5);
+  EXPECT_FALSE(tree.empty());
+  EXPECT_EQ(1, tree.size());
+  EXPECT_TRUE(tree.root());
+  EXPECT_EQ(5, tree.root()->data());
+
+  std::vector<int> collect;
+  tree.for_each([&](auto &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({5}), collect);
+
+  auto root_child = ++tree.root();
+  EXPECT_FALSE(root_child);
 }
 
 TEST(Test2, test_3) {
-  Tree<int> tree(5);
+  contiguous::Tree<int> tree(5);
   auto root = tree.root();
   auto child = root.add_child(8);
   EXPECT_EQ(8, child->data());
 }
-
-TEST(Test3, test_4) { EXPECT_TRUE(true); }
-
-TEST(Test4, test_5) { EXPECT_TRUE(true); }

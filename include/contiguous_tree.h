@@ -75,7 +75,7 @@ public:
   auto size() const { return nodes_.size(); }
   void reserve(size_t reserve) { nodes_.reserve(reserve); }
 
-  Node_ptr root() { return Node_ptr(0, &nodes_); }
+  Node_ptr root() { return Node_ptr(0, nodes_.empty() ? nullptr : &nodes_); }
 
   template <class Function> void for_each(Function f) const {
     if (nodes_.empty())
