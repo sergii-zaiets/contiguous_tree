@@ -63,34 +63,19 @@ public:
 
     auto operator->() { return &nodes_->at(index_); }
     auto operator->() const { return &nodes_->at(index_); }
-
-    auto &operator*() { return nodes_->at(index_); }
-    auto &operator*() const { return nodes_->at(index_); }
   };
 
   using Node_ptr = Ptr<Node>;
   using Node_cptr = Ptr<Node const>;
 
   Tree() = default;
-  Tree(size_t reserve) { nodes_.reserve(reserve); }
+  Tree(T &&data) { nodes_.emplace_back(std::forward<T>(data)); }
+
   bool empty() const { return nodes_.empty(); }
   auto size() const { return nodes_.size(); }
+  void reserve(size_t reserve) { nodes_.reserve(reserve); }
 
-  Node_ptr create_top(T &&data) {
-    // ASSERT_RUNTIME(nodes_.empty());
-    nodes_.emplace_back(std::forward<T>(data));
-    return Node_ptr(nodes_.size() - 1, &nodes_);
-  }
-
-  Node_ptr top() {
-    ASSERT_RUNTIME(!nodes_.empty());
-    return Node_ptr(0, &nodes_);
-  }
-
-  Node_cptr top() const {
-    ASSERT_RUNTIME(!nodes_.empty());
-    return Node_cptr(0, &nodes_);
-  }
+  Node_ptr root() { return Node_ptr(0, &nodes_); }
 
   template <class Function> void for_each(Function f) const {
     if (nodes_.empty())

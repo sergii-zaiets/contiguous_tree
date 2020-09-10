@@ -10,15 +10,15 @@ TEST(Test, empty_tree) {
 }
 
 TEST(Test1, add_top) {
-  Tree<int> tree;
-  auto top = tree.create_top(5);
-  EXPECT_EQ(5, top->data());
+  Tree<int> tree(5);
+  auto root = tree.root();
+  EXPECT_EQ(5, root->data());
 }
 
 TEST(Test2, test_3) {
-  Tree<int> tree;
-  auto top = tree.create_top(5);
-  auto child = top.add_child(8);
+  Tree<int> tree(5);
+  auto root = tree.root();
+  auto child = root.add_child(8);
   EXPECT_EQ(8, child->data());
 }
 
