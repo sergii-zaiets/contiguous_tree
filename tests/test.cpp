@@ -1,4 +1,5 @@
 #include "contiguous_tree.h"
+#include "utils.h"
 #include "gtest/gtest.h"
 #include <iostream>
 
@@ -12,7 +13,7 @@ TEST(Contiguous_test, empty_tree) {
   });
 }
 
-TEST(Test1, only_root) {
+TEST(Contiguous_test, only_root) {
   contiguous::Tree<int> tree(5);
   EXPECT_FALSE(tree.empty());
   EXPECT_EQ(1, tree.size());
@@ -27,9 +28,46 @@ TEST(Test1, only_root) {
   EXPECT_FALSE(root_child);
 }
 
-TEST(Test2, test_3) {
+TEST(Contiguous_test, root_with_2_children) {
   contiguous::Tree<int> tree(5);
+
   auto root = tree.root();
-  auto child = root.add_child(8);
-  EXPECT_EQ(8, child->data());
+  auto c1 = root.add_child(8);
+  auto c2 = root.add_child(10);
+
+  EXPECT_FALSE(tree.empty());
+  EXPECT_EQ(3, tree.size());
+
+  EXPECT_EQ(5, root->data());
+  EXPECT_EQ(8, c1->data());
+  EXPECT_EQ(10, c2->data());
+
+  std::vector<int> collect;
+  tree.for_each([&](auto &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({5, 8, 10}), collect);
+
+  auto c = root.children_begin();
+  ASSERT_TRUE(c);
+  EXPECT_EQ(8, c->data());
+  ASSERT_FALSE(c.children_begin());
+  ++c;
+  ASSERT_TRUE(c);
+  EXPECT_EQ(10, c->data());
+  ASSERT_FALSE(c.children_begin());
+  ++c;
+  ASSERT_FALSE(c);
+}
+
+TEST(Contiguous_test, create_contiguous_tree_indepth_with_depth_3_width_2) {
+  int depth = 3;
+  int width = 2;
+  contiguous::Tree<int> tree =
+      create_contiguous_tree_in_depth<int>(depth, width, []() {
+        static int i = 0;
+        return ++i;
+      });
+
+  std::vector<int> collect;
+  tree.for_each([&](auto &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
 }

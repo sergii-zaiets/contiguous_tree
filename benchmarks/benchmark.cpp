@@ -9,7 +9,7 @@ static void bm_create_classical_tree(benchmark::State &state) {
   int depth = state.range(0);
   int width = state.range(1);
   for (auto _ : state) {
-    Tree<int> tree = create_tree<int>(depth, width, []() {
+    Tree<int> tree = create_tree_in_depth<int>(depth, width, []() {
       static int i = 0;
       return ++i;
     });
@@ -32,7 +32,7 @@ static void bm_create_contiguous_tree(benchmark::State &state) {
   int width = state.range(1);
   for (auto _ : state) {
     contiguous::Tree<int> tree =
-        create_contiguous_tree<int>(depth, width, []() {
+        create_contiguous_tree_in_depth<int>(depth, width, []() {
           static int i = 0;
           return ++i;
         });
