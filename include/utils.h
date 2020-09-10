@@ -54,3 +54,24 @@ contiguous::Tree<T> create_contiguous_tree_in_depth(int depth, int width,
   add_to_contiguous_tree_in_depth<T>(tree.root(), --depth, width, function);
   return tree;
 }
+
+/*
+ *
+ ******************************************************************************/
+template <class T, class Function>
+void iterate_in_depth(typename contiguous::Tree<T>::Node_ptr node,
+                      Function const &function) {
+  if (!node)
+    return;
+  function(node->data());
+
+  for (auto c = node.children_begin(); !!c; ++c) {
+    iterate_in_depth<T>(c, function);
+  }
+}
+
+template <class T, class Function>
+void iterate_in_depth(contiguous::Tree<T> &tree, Function const &function) {
+  auto root = tree.root();
+  iterate_in_depth<T>(root, function);
+}
