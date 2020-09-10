@@ -70,7 +70,7 @@ void add_to_contiguous_tree_in_width(
     auto child = node.add_child(function());
   }
 
-  for (auto c = node.children_begin(); !!c; ++c) {
+  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
     add_to_contiguous_tree_in_width<T>(c, depth - 1, width, function);
   }
 }
@@ -115,7 +115,7 @@ void iterate_in_depth(typename contiguous::Tree<T>::Node_ptr node,
     return;
   function(node->data());
 
-  for (auto c = node.children_begin(); !!c; ++c) {
+  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
     iterate_in_depth<T>(c, function);
   }
 }
@@ -134,11 +134,11 @@ void iterate_in_width(typename contiguous::Tree<T>::Node_ptr node,
   if (!node)
     return;
 
-  for (auto c = node.children_begin(); !!c; ++c) {
+  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
     function(c->data());
   }
 
-  for (auto c = node.children_begin(); !!c; ++c) {
+  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
     iterate_in_width<T>(c, function);
   }
 }

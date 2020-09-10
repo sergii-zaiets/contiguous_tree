@@ -9,10 +9,9 @@ static void bm_create_classical_tree(benchmark::State &state) {
   int depth = state.range(0);
   int width = state.range(1);
   for (auto _ : state) {
-    Tree<int> tree = create_tree_in_depth<int>(depth, width, []() {
-      static int i = 0;
-      return ++i;
-    });
+    int i = 0;
+    Tree<int> tree =
+        create_tree_in_depth<int>(depth, width, [&]() { return ++i; });
     ASSERT_FALSE(tree.empty());
   }
 }
@@ -30,11 +29,10 @@ static void bm_create_contiguous_tree(benchmark::State &state) {
   int depth = state.range(0);
   int width = state.range(1);
   for (auto _ : state) {
-    contiguous::Tree<int> tree =
-        create_contiguous_tree_in_depth<int>(depth, width, []() {
-          static int i = 0;
-          return ++i;
-        });
+
+    int i = 0;
+    contiguous::Tree<int> tree = create_contiguous_tree_in_depth<int>(
+        depth, width, [&]() { return ++i; });
     ASSERT_FALSE(tree.empty());
   }
 }
@@ -53,11 +51,9 @@ static void bm_create_contiguous_tree_in_width(benchmark::State &state) {
   int depth = state.range(0);
   int width = state.range(1);
   for (auto _ : state) {
-    contiguous::Tree<int> tree =
-        create_contiguous_tree_in_width<int>(depth, width, []() {
-          static int i = 0;
-          return ++i;
-        });
+    int i = 0;
+    contiguous::Tree<int> tree = create_contiguous_tree_in_width<int>(
+        depth, width, [&]() { return ++i; });
     ASSERT_FALSE(tree.empty());
   }
 }

@@ -43,12 +43,9 @@ public:
 
     operator bool() const { return !!nodes_; }
 
-    Ptr &operator++() {
-      Ptr n{nodes_->at(index_).next_sibling_,
-            nodes_->at(index_).next_sibling_ ? nodes_ : nullptr};
-      index_ = n.index_;
-      nodes_ = n.nodes_;
-      return *this;
+    Ptr next_child() {
+      return {nodes_->at(index_).next_sibling_,
+              nodes_->at(index_).next_sibling_ ? nodes_ : nullptr};
     }
 
     Ptr children_begin() const {
