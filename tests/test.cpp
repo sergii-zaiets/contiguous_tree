@@ -58,7 +58,7 @@ TEST(Contiguous_test, root_with_2_children) {
   ASSERT_FALSE(c);
 }
 
-TEST(Contiguous_test, test_for_each___create_indepth_with_d_3_w_2) {
+TEST(Contiguous_test, test_for_each___create_in_depth_with_d_3_w_2) {
   int depth = 3;
   int width = 2;
   contiguous::Tree<int> tree =
@@ -72,7 +72,7 @@ TEST(Contiguous_test, test_for_each___create_indepth_with_d_3_w_2) {
   EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
 }
 
-TEST(Contiguous_test, iterate_in_depth___create_indepth_with_d_3_w_2) {
+TEST(Contiguous_test, iterate_in_depth___create_in_depth_with_d_3_w_2) {
   int depth = 3;
   int width = 2;
   contiguous::Tree<int> tree =
@@ -83,5 +83,61 @@ TEST(Contiguous_test, iterate_in_depth___create_indepth_with_d_3_w_2) {
 
   std::vector<int> collect;
   iterate_in_depth(tree, [&](int &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
+}
+
+TEST(Contiguous_test, iterate_in_width___create_in_depth_with_d_3_w_2) {
+  int depth = 3;
+  int width = 2;
+  contiguous::Tree<int> tree =
+      create_contiguous_tree_in_depth<int>(depth, width, []() {
+        static int i = 0;
+        return ++i;
+      });
+
+  std::vector<int> collect;
+  iterate_in_width(tree, [&](int &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({1, 2, 5, 3, 4, 6, 7}), collect);
+}
+
+TEST(Contiguous_test, test_for_each___create_in_width_with_d_3_w_2) {
+  int depth = 3;
+  int width = 2;
+  contiguous::Tree<int> tree =
+      create_contiguous_tree_in_width<int>(depth, width, []() {
+        static int i = 0;
+        return ++i;
+      });
+
+  std::vector<int> collect;
+  tree.for_each([&](auto &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
+}
+
+TEST(Contiguous_test, iterate_in_depth___create_in_width_with_d_3_w_2) {
+  int depth = 3;
+  int width = 2;
+  contiguous::Tree<int> tree =
+      create_contiguous_tree_in_width<int>(depth, width, []() {
+        static int i = 0;
+        return ++i;
+      });
+
+  std::vector<int> collect;
+  iterate_in_depth(tree, [&](int &n) { collect.emplace_back(n); });
+  EXPECT_EQ(std::vector<int>({1, 2, 4, 5, 3, 6, 7}), collect);
+}
+
+TEST(Contiguous_test, iterate_in_width___create_in_width_with_d_3_w_2) {
+  int depth = 3;
+  int width = 2;
+  contiguous::Tree<int> tree =
+      create_contiguous_tree_in_width<int>(depth, width, []() {
+        static int i = 0;
+        return ++i;
+      });
+
+  std::vector<int> collect;
+  iterate_in_width(tree, [&](int &n) { collect.emplace_back(n); });
   EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
 }
