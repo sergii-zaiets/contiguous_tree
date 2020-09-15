@@ -7,7 +7,7 @@
 namespace contiguous {
 
 /*
- *
+ * Contiguous tree implentation: very simple and naive
  */
 template <class T> class Tree {
 public:
@@ -22,11 +22,12 @@ public:
 
   private:
     T data_;
-    size_t children_begin_{};
-    size_t next_sibling_{};
+    size_t children_begin_{}; // default 0 - no children
+    size_t next_sibling_{};   // default 0 - no siblings
   };
 
   template <class N> class Ptr;
+
   using Node_ptr = Ptr<Node>;
   using Node_cptr = Ptr<Node const>;
 
@@ -60,7 +61,7 @@ public:
       return {cb, cb ? nodes_ : nullptr};
     }
 
-    Ptr add_child(T &&data) {
+    Ptr add_child(T &&data) const {
       auto *ptr = &nodes_->at(index_).children_begin_;
       while (*ptr) {
         ptr = &nodes_->at(*ptr).next_sibling_;
