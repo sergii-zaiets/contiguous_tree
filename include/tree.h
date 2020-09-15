@@ -1,14 +1,7 @@
 #include <memory>
 #include <vector>
 
-template <class T> struct Node {
-  Node(T &&d) : data(std::forward<T>(d)) {}
-  Node(Node &&rhs) = default;
-  Node(Node &rhs) = delete;
-
-  T data;
-  std::vector<Node<T>> children;
-};
+template <class T> struct Node;
 
 template <class T> struct Tree {
   Tree() {}
@@ -20,4 +13,13 @@ template <class T> struct Tree {
 
 private:
   std::unique_ptr<Node<T>> root_;
+};
+
+template <class T> struct Node {
+  Node(T &&d) : data(std::forward<T>(d)) {}
+  Node(Node &&rhs) = default;
+  Node(Node &rhs) = delete;
+
+  T data;
+  std::vector<Node<T>> children;
 };
