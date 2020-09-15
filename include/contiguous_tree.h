@@ -61,7 +61,7 @@ public:
       return {cb, cb ? nodes_ : nullptr};
     }
 
-    Ptr add_child(T &&data) const {
+    Ptr add_child(T &&data) {
       auto *ptr = &nodes_->at(index_).children_begin_;
       while (*ptr) {
         ptr = &nodes_->at(*ptr).next_sibling_;
