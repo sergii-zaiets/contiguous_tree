@@ -1,6 +1,9 @@
 #include <memory>
 #include <vector>
 
+/*
+ * Conventional/classical tree implementation to compare with
+ */
 template <class T> struct Node;
 
 template <class T> struct Tree {
