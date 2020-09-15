@@ -109,10 +109,12 @@ void iterate_in_depth(Tree<T> &tree, Function const &function) {
  *
  ******************************************************************************/
 template <class T, class Function>
-void iterate_in_depth(typename contiguous::Tree<T>::Node_ptr node,
+void iterate_in_depth(typename contiguous::Tree<T>::Node_cptr node,
                       Function const &function) {
-  if (!node)
+  if (!node) {
     return;
+  }
+
   function(node->data());
 
   for (auto c = node.children_begin(); !!c; c = c.next_child()) {
@@ -129,11 +131,8 @@ void iterate_in_depth(contiguous::Tree<T> &tree, Function const &function) {
  *
  ******************************************************************************/
 template <class T, class Function>
-void iterate_in_width(typename contiguous::Tree<T>::Node_ptr node,
+void iterate_in_width(typename contiguous::Tree<T>::Node_cptr node,
                       Function const &function) {
-  if (!node)
-    return;
-
   for (auto c = node.children_begin(); !!c; c = c.next_child()) {
     function(c->data());
   }
@@ -144,9 +143,10 @@ void iterate_in_width(typename contiguous::Tree<T>::Node_ptr node,
 }
 
 template <class T, class Function>
-void iterate_in_width(contiguous::Tree<T> &tree, Function const &function) {
-  auto root = tree.root();
-  if (root)
+void iterate_in_width(contiguous::Tree<T> const &tree,
+                      Function const &function) {
+  if (auto root = tree.root()) {
     function(root->data());
-  iterate_in_width<T>(root, function);
+    iterate_in_width<T>(root, function);
+  }
 }

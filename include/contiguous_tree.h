@@ -26,10 +26,14 @@ public:
     size_t next_sibling_{};
   };
 
+  template <class N> class Ptr;
+  using Node_ptr = Ptr<Node>;
+  using Node_cptr = Ptr<Node const>;
+
   template <class N> class Ptr {
     friend class Tree;
     using vector_type =
-        std::conditional_t<std::is_const<N>::value, const std::vector<Node>,
+        std::conditional_t<std::is_const<N>::value, std::vector<Node> const,
                            std::vector<Node>>;
     size_t index_;
     vector_type *nodes_;
@@ -41,9 +45,12 @@ public:
     Ptr &operator=(Ptr const &) = default;
     Ptr &operator=(Ptr &&) = default;
 
+    template <class U>
+    Ptr(Ptr<U> rhs) : index_(rhs.index_), nodes_(rhs.nodes_) {}
+
     operator bool() const { return !!nodes_; }
 
-    Ptr next_child() {
+    Ptr next_child() const {
       return {nodes_->at(index_).next_sibling_,
               nodes_->at(index_).next_sibling_ ? nodes_ : nullptr};
     }
@@ -67,9 +74,6 @@ public:
     auto operator->() const { return &nodes_->at(index_); }
   };
 
-  using Node_ptr = Ptr<Node>;
-  using Node_cptr = Ptr<Node const>;
-
   Tree() = default;
   Tree(T &&data) { nodes_.emplace_back(std::forward<T>(data)); }
 
@@ -78,6 +82,9 @@ public:
   void reserve(size_t reserve) { nodes_.reserve(reserve); }
 
   Node_ptr root() { return Node_ptr(0, nodes_.empty() ? nullptr : &nodes_); }
+  Node_cptr root() const {
+    return Node_cptr(0, nodes_.empty() ? nullptr : &nodes_);
+  }
 
   template <class Function> void for_each(Function f) const {
     if (nodes_.empty())
