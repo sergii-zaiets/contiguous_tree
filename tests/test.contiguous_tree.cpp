@@ -8,9 +8,6 @@ TEST(Contiguous_test, empty_tree) {
   EXPECT_TRUE(tree.empty());
   EXPECT_EQ(0, tree.size());
   EXPECT_FALSE(tree.root());
-  tree.for_each([](auto &n) {
-    ASSERT_TRUE(false); // must not be called
-  });
 }
 
 TEST(Contiguous_test, only_root) {
