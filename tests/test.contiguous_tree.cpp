@@ -4,10 +4,32 @@
 #include <iostream>
 
 TEST(Contiguous_test, empty_tree) {
-  contiguous::Tree<int> tree;
-  EXPECT_TRUE(tree.empty());
-  EXPECT_EQ(0, tree.size());
-  EXPECT_FALSE(tree.root());
+  {
+    contiguous::Tree<int> tree;
+    EXPECT_TRUE(tree.empty());
+    EXPECT_EQ(0, tree.size());
+    EXPECT_FALSE(tree.root());
+  }
+  {
+    contiguous::Tree<int> tree =
+        create_contiguous_tree_in_depth<int>(0, 1, []() { return 0; });
+    EXPECT_TRUE(tree.empty());
+  }
+  {
+    contiguous::Tree<int> tree =
+        create_contiguous_tree_in_width<int>(0, 1, []() { return 0; });
+    EXPECT_TRUE(tree.empty());
+  }
+  {
+    contiguous::Tree<int> tree =
+        create_contiguous_tree_in_depth<int>(1, 0, []() { return 0; });
+    EXPECT_TRUE(tree.empty());
+  }
+  {
+    contiguous::Tree<int> tree =
+        create_contiguous_tree_in_width<int>(1, 0, []() { return 0; });
+    EXPECT_TRUE(tree.empty());
+  }
 }
 
 TEST(Contiguous_test, only_root) {

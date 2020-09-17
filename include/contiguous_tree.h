@@ -88,8 +88,9 @@ public:
   }
 
   template <class Function> void for_each(Function f) const {
-    if (nodes_.empty())
+    if (nodes_.empty()) {
       return;
+    }
     std::for_each(nodes_.begin(), nodes_.end(),
                   [&](Node const &n) { f(n.data()); });
   }

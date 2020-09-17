@@ -8,9 +8,9 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/.build_debug/benchmarks/run_benchmarks",
+      "program": "${workspaceFolder}/.build_debug/tests/run_tests",
       "args": [
-        "--benchmark_filter=Traverse*"
+        "--gtest_filter=Classical_tree.iterate_in_width___create_in_depth_with_d_3_w_2"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

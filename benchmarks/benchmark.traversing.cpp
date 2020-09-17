@@ -23,7 +23,7 @@ BENCHMARK_DEFINE_F(Traverse_classical_tree, in_depth_and_sumup)
 (benchmark::State &state) {
   for (auto _ : state) {
     int sum = 0;
-    iterate_in_depth(tree_, [&](int &n) { sum += n; });
+    iterate_in_depth(tree_, [&](int n) { sum += n; });
     ASSERT_TRUE(sum > 0);
   }
 }
