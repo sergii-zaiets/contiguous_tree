@@ -30,6 +30,11 @@ TEST(Contiguous_test, empty_tree) {
         create_contiguous_tree_in_width<int>(1, 0, []() { return 0; });
     EXPECT_TRUE(tree.empty());
   }
+  {
+    contiguous::Tree<int> tree;
+    iterate_contiguous_in_width(tree, [](int n) {});
+    iterate_contiguous_in_width(tree, [](int n) {});
+  }
 }
 
 TEST(Contiguous_test, only_root) {

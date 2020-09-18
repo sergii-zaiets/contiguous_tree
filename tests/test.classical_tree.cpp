@@ -24,6 +24,11 @@ TEST(Classical_tree, empty_tree) {
     Tree<int> tree = create_tree_in_width<int>(1, 0, []() { return 0; });
     EXPECT_TRUE(tree.empty());
   }
+  {
+    Tree<int> tree;
+    iterate_in_depth(tree, [](int n) {});
+    iterate_in_width(tree, [](int n) {});
+  }
 }
 
 TEST(Classical_tree, only_root) {
