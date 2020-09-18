@@ -114,28 +114,32 @@ TEST(Classical_tree, iterate_in_width___create_in_depth_with_d_4_w_2) {
       collect);
 }
 
-// TEST(Classical_tree, iterate_in_depth___create_in_width_with_d_4_w_2) {
-//   int depth = 4;
-//   int width = 2;
+TEST(Classical_tree, iterate_in_depth___create_in_width_with_d_4_w_2) {
+  int depth = 4;
+  int width = 2;
 
-//   int i = 0;
-//   Tree<int> tree =
-//       create_tree_in_width<int>(depth, width, [&]() { return ++i; });
+  int i = 0;
+  Tree<int> tree =
+      create_tree_in_width<int>(depth, width, [&]() { return ++i; });
 
-//   std::vector<int> collect;
-//   iterate_in_depth(tree, [&](int n) { collect.emplace_back(n); });
-//   EXPECT_EQ(std::vector<int>({1, 2, 4, 5, 3, 6, 7}), collect);
-// }
+  std::vector<int> collect;
+  iterate_in_depth(tree, [&](int n) { collect.emplace_back(n); });
+  EXPECT_EQ(
+      std::vector<int>({1, 2, 4, 8, 9, 5, 10, 11, 3, 6, 12, 13, 7, 14, 15}),
+      collect);
+}
 
-// TEST(Classical_tree, iterate_in_width___create_in_width_with_d_4_w_2) {
-//   int depth = 4;
-//   int width = 2;
+TEST(Classical_tree, iterate_in_width___create_in_width_with_d_4_w_2) {
+  int depth = 4;
+  int width = 2;
 
-//   int i = 0;
-//   Tree<int> tree =
-//       create_tree_in_width<int>(depth, width, [&]() { return ++i; });
+  int i = 0;
+  Tree<int> tree =
+      create_tree_in_width<int>(depth, width, [&]() { return ++i; });
 
-//   std::vector<int> collect;
-//   iterate_in_width(tree, [&](int n) { collect.emplace_back(n); });
-//   EXPECT_EQ(std::vector<int>({1, 2, 3, 4, 5, 6, 7}), collect);
-// }
+  std::vector<int> collect;
+  iterate_in_width(tree, [&](int n) { collect.emplace_back(n); });
+  EXPECT_EQ(
+      std::vector<int>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
+      collect);
+}

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "contiguous_tree.h"
 #include "tree.h"
 
@@ -63,20 +65,28 @@ contiguous::Tree<T> create_contiguous_tree_in_depth(int depth, int width,
  * Create a classical tree in width
  ******************************************************************************/
 template <class T, class Function>
-void add_to_tree_in_width(Node<T> &node, int depth, int width,
-                          Function const &function) {
+void add_to_tree_in_width_impl(std::vector<Node<T> *> const &nodes, int depth,
+                               int width, Function const &function) {
   if (depth <= 0) {
     return;
   }
 
-  int i = width;
-  while (i--) {
-    node.children.emplace_back(function());
+  std::vector<Node<T> *> children;
+
+  for (auto n : nodes) {
+    int i = width;
+    while (i--) {
+      n->children.emplace_back(function());
+    }
   }
 
-  for (auto &c : node.children) {
-    add_to_tree_in_width<T>(c, depth - 1, width, function);
+  for (auto n : nodes) {
+    for (auto &c : n->children) {
+      children.emplace_back(&c);
+    }
   }
+
+  add_to_tree_in_width_impl<T>(children, depth - 1, width, function);
 }
 
 template <class T, class Function>
@@ -86,7 +96,7 @@ Tree<T> create_tree_in_width(int depth, int width, Function const &function) {
   }
 
   Tree<T> tree(function());
-  add_to_tree_in_width<T>(tree.root(), --depth, width, function);
+  add_to_tree_in_width_impl<T>({&tree.root()}, --depth, width, function);
   return tree;
 }
 
@@ -94,21 +104,29 @@ Tree<T> create_tree_in_width(int depth, int width, Function const &function) {
  * Create a contiguous tree in width
  ******************************************************************************/
 template <class T, class Function>
-void add_to_contiguous_tree_in_width(
-    typename contiguous::Tree<T>::Node_ptr node, int depth, int width,
-    Function const &function) {
+void add_to_contiguous_tree_in_width_impl(
+    std::vector<typename contiguous::Tree<T>::Node_ptr> const &nodes, int depth,
+    int width, Function const &function) {
   if (depth <= 0) {
     return;
   }
 
-  int i = width;
-  while (i--) {
-    node.add_child(function());
+  std::vector<typename contiguous::Tree<T>::Node_ptr> children;
+
+  for (auto n : nodes) {
+    int i = width;
+    while (i--) {
+      n.add_child(function());
+    }
   }
 
-  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
-    add_to_contiguous_tree_in_width<T>(c, depth - 1, width, function);
+  for (auto n : nodes) {
+    for (auto c = n.children_begin(); !!c; c = c.next_child()) {
+      children.emplace_back(c);
+    }
   }
+
+  add_to_contiguous_tree_in_width_impl<T>(children, depth - 1, width, function);
 }
 
 template <class T, class Function>
@@ -119,7 +137,8 @@ contiguous::Tree<T> create_contiguous_tree_in_width(int depth, int width,
   }
 
   contiguous::Tree<T> tree(function());
-  add_to_contiguous_tree_in_width<T>(tree.root(), --depth, width, function);
+  add_to_contiguous_tree_in_width_impl<T>({tree.root()}, --depth, width,
+                                          function);
   return tree;
 }
 
@@ -147,8 +166,8 @@ void iterate_in_depth(Tree<T> const &tree, Function const &function) {
  *
  ******************************************************************************/
 template <class T, class Function>
-void iterate_in_depth(typename contiguous::Tree<T>::Node_cptr node,
-                      Function const &function) {
+void iterate_contiguous_in_depth(typename contiguous::Tree<T>::Node_cptr node,
+                                 Function const &function) {
   if (!node) {
     return;
   }
@@ -156,60 +175,80 @@ void iterate_in_depth(typename contiguous::Tree<T>::Node_cptr node,
   function(node->data());
 
   for (auto c = node.children_begin(); !!c; c = c.next_child()) {
-    iterate_in_depth<T>(c, function);
+    iterate_contiguous_in_depth<T>(c, function);
   }
 }
 
 template <class T, class Function>
-void iterate_in_depth(contiguous::Tree<T> const &tree,
-                      Function const &function) {
-  iterate_in_depth<T>(tree.root(), function);
+void iterate_contiguous_in_depth(contiguous::Tree<T> const &tree,
+                                 Function const &function) {
+  iterate_contiguous_in_depth<T>(tree.root(), function);
 }
 
 /*
  *
  ******************************************************************************/
 template <class T, class Function>
-void iterate_in_width(Node<T> const &node, Function const &function) {
-  for (auto &c : node.children) {
-    function(c.data);
+void iterate_in_width_impl(std::vector<Node<T> const *> const &nodes,
+                           Function const &function) {
+  if (nodes.empty()) {
+    return;
   }
 
-  for (auto &c : node.children) {
-    iterate_in_width<T>(c, function);
+  std::vector<Node<T> const *> children;
+
+  for (auto n : nodes) {
+    for (auto &c : n->children) {
+      children.emplace_back(&c);
+    }
   }
+
+  for (auto np : children) {
+    function(np->data);
+  }
+
+  iterate_in_width_impl<T>(children, function);
 }
 
 template <class T, class Function>
 void iterate_in_width(Tree<T> const &tree, Function const &function) {
-  if (tree.empty()) {
-    return;
+  if (!tree.empty()) {
+    function(tree.root().data);
+    iterate_in_width_impl<T>({&tree.root()}, function);
   }
-
-  function(tree.root().data);
-  iterate_in_width<T>(tree.root(), function);
 }
 
 /*
  *
  ******************************************************************************/
 template <class T, class Function>
-void iterate_in_width(typename contiguous::Tree<T>::Node_cptr node,
-                      Function const &function) {
-  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
-    function(c->data());
+void iterate_in_width_impl(
+    std::vector<typename contiguous::Tree<T>::Node_cptr> const &nodes,
+    Function const &function) {
+  if (nodes.empty()) {
+    return;
   }
 
-  for (auto c = node.children_begin(); !!c; c = c.next_child()) {
-    iterate_in_width<T>(c, function);
+  std::vector<typename contiguous::Tree<T>::Node_cptr> children;
+
+  for (auto n : nodes) {
+    for (auto c = n.children_begin(); !!c; c = c.next_child()) {
+      children.emplace_back(c);
+    }
   }
+
+  for (auto np : children) {
+    function(np->data());
+  }
+
+  iterate_in_width_impl<T>(children, function);
 }
 
 template <class T, class Function>
-void iterate_in_width(contiguous::Tree<T> const &tree,
-                      Function const &function) {
+void iterate_contiguous_in_width(contiguous::Tree<T> const &tree,
+                                 Function const &function) {
   if (auto root = tree.root()) {
     function(root->data());
-    iterate_in_width<T>(root, function);
+    iterate_in_width_impl<T>({root}, function);
   }
 }
