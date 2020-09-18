@@ -19,7 +19,7 @@ public:
   void TearDown(const ::benchmark::State &state) {}
 };
 
-BENCHMARK_DEFINE_F(Traverse_classical_tree, in_depth_and_sumup)
+BENCHMARK_DEFINE_F(Traverse_classical_tree, in_depth_and_sum_up)
 (benchmark::State &state) {
   for (auto _ : state) {
     int sum = 0;
@@ -29,14 +29,13 @@ BENCHMARK_DEFINE_F(Traverse_classical_tree, in_depth_and_sumup)
 }
 
 // Define another benchmark
-BENCHMARK_REGISTER_F(Traverse_classical_tree, in_depth_and_sumup)
+BENCHMARK_REGISTER_F(Traverse_classical_tree, in_depth_and_sum_up)
     ->Unit(benchmark::kMillisecond)
     ->Args({10, 2})
     ->Args({11, 2})
     ->Args({12, 2})
     ->Args({13, 3})
-    ->Args({13, 4})
-    ->Args({27, 2});
+    ->Args({13, 4});
 
 /*
  *
@@ -59,7 +58,7 @@ public:
   void TearDown(const ::benchmark::State &state) {}
 };
 
-BENCHMARK_DEFINE_F(Traverse_contiguous_tree, in_depth_and_sumup)
+BENCHMARK_DEFINE_F(Traverse_contiguous_tree, in_depth_and_sum_up)
 (benchmark::State &state) {
   for (auto _ : state) {
     int sum = 0;
@@ -69,11 +68,10 @@ BENCHMARK_DEFINE_F(Traverse_contiguous_tree, in_depth_and_sumup)
 }
 
 // Define another benchmark
-BENCHMARK_REGISTER_F(Traverse_contiguous_tree, in_depth_and_sumup)
+BENCHMARK_REGISTER_F(Traverse_contiguous_tree, in_depth_and_sum_up)
     ->Unit(benchmark::kMillisecond)
     ->Args({10, 2})
     ->Args({11, 2})
     ->Args({12, 2})
     ->Args({13, 3})
-    ->Args({13, 4})
-    ->Args({27, 2});
+    ->Args({13, 4});
